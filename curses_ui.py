@@ -53,8 +53,16 @@ import curses
 import sys
 
 from matrix_math import N_COLUMNS, N_DIGITS, ROW_WIDTH, trace_multiplication
+from factor_reconstruction import factor_search
 
 MAX_VAL = 10 ** N_DIGITS - 1
+
+# Factor-reconstruction mode's own safety bounds -- deliberately NOT tied to
+# N_DIGITS (the multiplication mode's fixed digit count stays untouched).
+# These exist so a live terminal loop stops itself honestly at the wall
+# instead of hanging -- see factor_reconstruction.py's own docstring.
+FACTOR_MAX_LIVE_STATES = 200_000
+FACTOR_TIME_BUDGET_PER_LEVEL_S = 2.0
 
 
 def CTRL(letter: str) -> int:
@@ -198,7 +206,7 @@ def draw_matrix_at_offsets(win, y, x, num1: int, num2: int, offsets: list,
 
 
 def draw_status_bar(win, pairs, step_place: int, h: int, w: int):
-    left = f"^G Jump num2  ^N Jump num1  ^O Step x10 (now: 10^{step_place})  PgUp/PgDn +-1 higher place  Up/Dn +-step  ^E Edit rows  q Quit"
+    left = f"^G Jump num2  ^N Jump num1  ^O Step x10 (now: 10^{step_place})  PgUp/PgDn +-1 higher place  Up/Dn +-step  ^E Edit rows  ^F Factor mode  q Quit"
     bar = left[: max(0, w - 1)].ljust(max(0, w - 1))
     safe_addstr(win, h - 1, 0, bar, pairs["bar"])
 
@@ -238,6 +246,89 @@ def prompt_for_number(stdscr, pairs, h: int, w: int, label: str, current: int) -
         curses.curs_set(0)
 
 
+def prompt_for_bignum(stdscr, pairs, h: int, w: int, label: str) -> "int | None":
+    """Same nano-style input as prompt_for_number, but deliberately
+    UNCAPPED -- factor-reconstruction mode's whole point is testing real
+    moduli (hundreds of digits), not N_DIGITS-limited toy numbers. Digits
+    only; Enter confirms, Esc/Ctrl+C cancels."""
+    buf = ""
+    curses.curs_set(1)
+    try:
+        while True:
+            shown = buf if len(buf) <= w - 40 else buf[:12] + f"...({len(buf)} digits)..." + buf[-12:]
+            prompt = f"{label} (any length, Enter=ok Esc=cancel): {shown}"
+            safe_addstr(stdscr, h - 1, 0, " " * max(0, w - 1), pairs["bar"])
+            safe_addstr(stdscr, h - 1, 0, prompt[: max(0, w - 1)], pairs["bar"])
+            stdscr.refresh()
+            ch = stdscr.getch()
+            if ch in (27,):  # Esc
+                return None
+            elif ch in (curses.KEY_ENTER, 10, 13):
+                if buf == "":
+                    return None
+                return int(buf)
+            elif ch in (curses.KEY_BACKSPACE, 127, 8):
+                buf = buf[:-1]
+            elif 48 <= ch <= 57:  # ASCII '0'-'9' -- no length cap
+                buf += chr(ch)
+    finally:
+        curses.curs_set(0)
+
+
+def draw_factor_mode(stdscr, pairs, state: dict, h: int, w: int):
+    """Live view of factor_reconstruction.py's digit-DP search: watching
+    the wall form, not attempting to factor anything at real key size.
+    Draws the peak-live-state count per n_digits level tried so far as a
+    log-scale bar, plus the current level's own per-column trace."""
+    N = state["N"]
+    n_str = str(N)
+    digits_label = f"N ({len(n_str)} digits)"
+    shown_n = n_str if len(n_str) <= w - 20 else n_str[:10] + f"...({len(n_str)} digits total)..." + n_str[-10:]
+    safe_addstr(stdscr, 0, 2, f"{digits_label}: {shown_n}")
+    safe_addstr(stdscr, 1, 2, "FACTOR RECONSTRUCTION -- addition-matrix undoing, from the fixed (units) end outward")
+
+    row = 3
+    if state.get("solutions"):
+        p, q = state["solutions"][0]
+        safe_addstr(stdscr, row, 2, f"SOLVED: N = {p} * {q}", pairs.get(2))
+        row += 2
+    elif state.get("wall_reached"):
+        safe_addstr(stdscr, row, 2,
+                    f"WALL REACHED at n_digits={state['n_digits']}: {state['wall_reason']}", pairs.get(1))
+        row += 1
+        safe_addstr(stdscr, row, 2,
+                    "This is the honest boundary, not a bug -- see factor_reconstruction.py's own")
+        row += 1
+        safe_addstr(stdscr, row, 2,
+                    "growth_law_estimate()/extrapolate_infeasibility() for what continuing implies.")
+        row += 2
+    else:
+        safe_addstr(stdscr, row, 2, f"searching... n_digits={state['n_digits']}  "
+                                     f"elapsed={state.get('level_elapsed', 0.0):.2f}s")
+        row += 2
+
+    safe_addstr(stdscr, row, 2, "peak live-states per n_digits level (log scale, one # per decade):")
+    row += 1
+    for n, peak in sorted(state["peaks"].items()):
+        bar_len = max(1, int((peak and __import__("math").log10(max(peak, 1))) or 0))
+        bar = "#" * min(bar_len, w - 30)
+        safe_addstr(stdscr, row, 2, f"  n_digits={n:3d}  peak={peak:>10}  {bar}")
+        row += 1
+        if row >= h - 4:
+            break
+
+    if len(state["peaks"]) >= 2:
+        ns = sorted(state["peaks"])
+        ratios = [state["peaks"][b] / state["peaks"][a] for a, b in zip(ns, ns[1:]) if state["peaks"][a] > 0]
+        if ratios:
+            mean_ratio = sum(ratios) / len(ratios)
+            row += 1
+            safe_addstr(stdscr, row, 2, f"measured growth ratio: {mean_ratio:.2f}x per added digit")
+
+    bar_text = "^B Enter modulus  Space pause/resume  r reset  Enter/Esc exit factor mode  q Quit"
+    safe_addstr(stdscr, h - 1, 0, bar_text[: max(0, w - 1)].ljust(max(0, w - 1)), pairs["bar"])
+
+
 def main(stdscr):
     num1 = int(sys.argv[1]) if len(sys.argv) > 1 else 1234567890
     num2 = int(sys.argv[2]) if len(sys.argv) > 2 else 1000000000
@@ -254,6 +345,13 @@ def main(stdscr):
     cursor_row = 0
     offsets = list(range(N_DIGITS))  # standard staircase, "right slope of 1"
 
+    # Factor-reconstruction mode -- entirely separate state, no N_DIGITS
+    # cap (see factor_reconstruction.py / FACTOR_MAX_LIVE_STATES above).
+    factor_mode = False
+    factor_running = False
+    factor_state = {"N": None, "n_digits": 1, "peaks": {}, "solutions": [],
+                     "wall_reached": False, "wall_reason": "", "level_elapsed": 0.0}
+
     needed_w = max(2 + N_COLUMNS * 2, 52)
     needed_h = 9 + N_DIGITS + 2
 
@@ -263,6 +361,36 @@ def main(stdscr):
         if h < needed_h or w < needed_w:
             safe_addstr(stdscr, 0, 0, f"terminal too small -- need at least {needed_w}x{needed_h}, have {w}x{h}")
             stdscr.refresh()
+        elif factor_mode:
+            if factor_state["N"] is None:
+                safe_addstr(stdscr, 0, 2, "FACTOR RECONSTRUCTION -- press ^B to enter a modulus (any length)")
+                safe_addstr(stdscr, h - 1, 0,
+                            "^B Enter modulus  Enter/Esc exit factor mode  q Quit"[: max(0, w - 1)].ljust(max(0, w - 1)),
+                            pairs["bar"])
+                stdscr.refresh()
+            else:
+                draw_factor_mode(stdscr, pairs, factor_state, h, w)
+                stdscr.refresh()
+
+                if factor_running and not factor_state["solutions"] and not factor_state["wall_reached"]:
+                    n = factor_state["n_digits"]
+                    r = factor_search(factor_state["N"], n_digits=n,
+                                       max_live_states=FACTOR_MAX_LIVE_STATES,
+                                       time_budget_s=FACTOR_TIME_BUDGET_PER_LEVEL_S)
+                    factor_state["peaks"][n] = max((h_[2] for h_ in r["history"]), default=0)
+                    factor_state["level_elapsed"] = r["elapsed_s"]
+                    if r["solutions"]:
+                        factor_state["solutions"] = r["solutions"]
+                        factor_running = False
+                    elif r["aborted"]:
+                        factor_state["wall_reached"] = True
+                        factor_state["wall_reason"] = r["aborted_reason"]
+                        factor_running = False
+                    else:
+                        factor_state["n_digits"] += 1
+                    stdscr.nodelay(True)
+                else:
+                    stdscr.nodelay(False)
         elif edit_mode:
             total = offset_total(num1, num2, offsets)
             is_standard = offsets == list(range(N_DIGITS))
@@ -289,6 +417,32 @@ def main(stdscr):
             stdscr.refresh()
 
         key = stdscr.getch()
+        if key == -1:  # nodelay(True), no key waiting -- just keep advancing the search
+            continue
+        if factor_mode:
+            if key in (curses.KEY_ENTER, 10, 13, 27):  # Enter or Esc -- exit factor mode
+                factor_mode = False
+                factor_running = False
+                stdscr.nodelay(False)
+            elif key in (ord("q"), ord("Q")):
+                break
+            elif key == CTRL("B"):
+                stdscr.nodelay(False)
+                new_val = prompt_for_bignum(stdscr, pairs, h, w, "factor-reconstruct N")
+                if new_val is not None and new_val > 1:
+                    factor_state = {"N": new_val, "n_digits": 1, "peaks": {}, "solutions": [],
+                                     "wall_reached": False, "wall_reason": "", "level_elapsed": 0.0}
+                    factor_running = True
+            elif key == ord(" "):
+                factor_running = not factor_running and factor_state["N"] is not None
+                if not factor_running:
+                    stdscr.nodelay(False)
+            elif key in (ord("r"), ord("R")):
+                if factor_state["N"] is not None:
+                    factor_state = {"N": factor_state["N"], "n_digits": 1, "peaks": {}, "solutions": [],
+                                     "wall_reached": False, "wall_reason": "", "level_elapsed": 0.0}
+                    factor_running = True
+            continue
         if edit_mode:
             if key in (curses.KEY_ENTER, 10, 13):
                 edit_mode = False
@@ -310,6 +464,8 @@ def main(stdscr):
             break
         elif key == CTRL("E"):
             edit_mode = True
+        elif key == CTRL("F"):
+            factor_mode = True
         elif key == curses.KEY_UP:
             num2 = min(MAX_VAL, num2 + 10 ** step_place)
         elif key == curses.KEY_DOWN:
