@@ -54,6 +54,7 @@ import sys
 
 from matrix_math import N_COLUMNS, N_DIGITS, ROW_WIDTH, trace_multiplication
 from factor_reconstruction import factor_search
+from toolsets.law import law_lines
 
 MAX_VAL = 10 ** N_DIGITS - 1
 
@@ -324,6 +325,14 @@ def draw_factor_mode(stdscr, pairs, state: dict, h: int, w: int):
             mean_ratio = sum(ratios) / len(ratios)
             row += 1
             safe_addstr(stdscr, row, 2, f"measured growth ratio: {mean_ratio:.2f}x per added digit")
+
+    # the law behind the growth ratio, and the K=0 address (toolsets/law.py)
+    row += 2
+    for line in law_lines(N, state["n_digits"], state["peaks"]):
+        if row >= h - 2:
+            break
+        safe_addstr(stdscr, row, 2, line[: max(0, w - 3)])
+        row += 1
 
     bar_text = "^B Enter modulus  Space pause/resume  r reset  Enter/Esc exit factor mode  q Quit"
     safe_addstr(stdscr, h - 1, 0, bar_text[: max(0, w - 1)].ljust(max(0, w - 1)), pairs["bar"])

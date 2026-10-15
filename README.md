@@ -28,6 +28,14 @@ reduction theorems, and the offset-shift equation `curses_ui.py`'s row-
 edit mode now lets you drive by hand — are in
 [`wiki/addition_matrix_basin.md`](wiki/addition_matrix_basin.md).
 
+## Toolsets, the law panel and the wiki
+
+`toolsets/` holds small stdlib-only analysis tools with a `self_check()` each (`law`, `torsor`, `treeaut`, `closedform`); their pages are in
+[`wiki/toolbox/`](wiki/toolbox/00_index.md), the core functionality is described in [`wiki/core_functionality.md`](wiki/core_functionality.md), and
+`python3 -m pytest tests -q` runs the checks. In factor-reconstruction mode the panel now also prints the closed-form count of live states
+beside the measured peak (the ×10 per digit is the order of the unit group of ℤ/10ᵏ) and the K = 0 address of the true factorisation (up to 6 digits).
+The same mathematics is the ValaQuenta engine `addition_matrix` and the code paper `FourthAgePapers/AdditionMatrixOrbits`.
+
 ## The math (`matrix_math.py`)
 
 Row `j` of the addition matrix is `num1 * digit_j(num2)`, shifted left `j`
