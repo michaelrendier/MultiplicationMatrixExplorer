@@ -1,0 +1,462 @@
+Okay.
+Watch this. 2 to the power of 6 to the
+power of 2 to the power of 1 to the
+power of 4 to the power of 4
+square root the whole thing
+equals 2 6 2 1 4 4.
+>> Same number.
+>> Yep. If you stack the digits of this
+number into a power tower and take its
+square root, you get back the original
+number.
+That's the video.
+Ta-da!
+>> Is there a catch to this?
+>> No catch. No literally no catch. Okay.
+Tiny tiny tiny catch.
+Minuscule. I don't even know why we're
+talking about it.
+There's a one here. So when you
+calculate down you work out 4 to the
+power of 4 and then you got 1 to the
+power of that.
+And guess what 1 to the power of
+anything is, Brady?
+>> One.
+>> One. One. One. So this one this one
+is basically holding back everything.
+It's like, I got I got you. So this one
+just neutralizes like everything above
+it. It's like, nah does does doesn't
+doesn't matter. Then you got 2 to the 1.
+That's just 2. So what you've actually
+got here is the square root of 2 6
+squared.
+36
+equals well square root
+you just half that cuz that's to the
+power of a half
+equals 2 to the 18
+which equals 2 6 2 1 4 4.
+Do you want to know how I found this
+number?
+>> Yes.
+>> On the internet. One day I came across
+like a math meme page. And I thought I'd
+check it out. They were all pretty
+underwhelming. Maybe there's a funny
+Spider-Man one about the square root of
+G equaling pi, but I was underwhelmed by
+almost all of them. And then this was
+just in the mix.
+And I I was like, what? And so I I
+pulled it out and I checked it and it
+works. And I was like, oh the one's
+doing a lot of
+whatever the opposite of heavy lifting
+is. And um I get it. It's just kind of
+fun that 2 to the 18 is this. I was
+like, "Actually, you know what?
+Let's just have a think about
+how cuz I don't know where this came
+from. I cannot if any internet
+archaeologists can tell me where this
+came from, I'd love to know. I couldn't
+find it.
+But I was like, "Well, how did this
+person find it and could I find some of
+my own?" And so, I realized pretty
+quickly what you're doing here
+is you need you need some number. This
+is this is going to be our number n.
+So, you need some number n
+equals
+Well, it's going to have to equal like
+some here this step here.
+That is some base b to some power k.
+So, it's going to have to equal some
+base to some power k. Oh, and the b for
+base is this everything is in base 10,
+but the base is just whatever the bottom
+of the exponent is. When you expand its
+digits out, you obviously you start with
+the lead digit is the base or the lead
+some digits of the base, let's say.
+Then you stack the rest on top,
+but whenever you hit a one, the rest
+doesn't matter. So, when you write the
+digits of this out, it's going to have
+to start with the base. So, whatever the
+digits in the base have to come first.
+Then the following block of digits
+have to be whatever digits you need.
+In this case, the next block of digits
+so actually the six
+or just the six and the two really
+form 36, which is a multiple of k.
+And we don't mind it being a multiple
+because the root means we can divide it
+by something. And so, these need to be
+whatever the digits are. I mean, here
+there's an implied two obviously. But
+that's some root
+n. So, this has to be the digit of
+whatever that tower value is times some
+n that we can cancel out. So, if the
+multiple is like, you know, three times,
+then you do a cube root.
+>> Yeah, yeah.
+>> I'm assuming that's within the rules.
+I'm just trying to do this as general as
+possible. Over here, you've got to have
+whatever's running interference.
+So, some kind of blocker.
+Which in our case is the one is like
+stopping everything after it, and then
+everything else is the free ride.
+So, here doesn't matter what these
+digits are cuz they're after the
+blocker. The one is the blocker, it
+stopped everything else after it. Okay.
+So, that's what we're looking for. So, I
+look for them. I
+I wrote some terrible Python code, ran
+it on my
+my my computer across all the cores for
+a very long time, checked just a huge
+space of Bs and Ks, and they're pretty
+quick to churn through because you take
+every range of Bs, you take your Ks, and
+I was just gradually increasing both.
+So, I went up and up and up. I ended up
+checking like over 300 billion
+combinations of B and K. They I just at
+some point I just turned the computer
+off, and that's where we stopped. And
+[snorts]
+between them, each one the first thing
+you're doing you raise it to a whole
+bunch of different powers, and for each
+power you're just checking does it start
+with the original base, and then you
+keep those, then you go through and
+check for your blockers and make see if
+you can do the tower afterwards. So,
+that was that's the search search
+method. Uh you want to see one? Yeah.
+New paper.
+>> New paper? Yeah, let's do it.
+>> [music]
+>> Okay, are you ready? 3162278.
+So, that's 3,160,278
+to the power of six.
+To the power of 7966335.
+You're thinking that's pretty
+ridiculous. Like, this is going to be
+outrageous.
+To the power of zero.
+To the power of 8952.
+Square root.
+Equals those exact digits. 31
+62279
+5 2. I'm now open
+for comments and questions.
+>> Well, I can see who's running
+interference.
+>> The zero.
+>> The zero.
+>> Turns out the reason I was vague before,
+I'm just like a blocker running
+interference, is because ones obviously
+work great. Zeros
+even better. So, zero here, well I was
+going to say zero is running
+interference, but that's not exactly
+what's happening, is it? Because zero
+all of this to the power of zero is one.
+So, in fact, everything back to that
+seven. So, all of this, that zero all
+the way back to that seven is all the
+blocker.
+>> So, I don't know. Now, running
+interference, that's an American
+football term, isn't it?
+>> It is.
+>> So, I don't know what you'd call the
+person in charge of running
+interference. There's probably a name
+for that. We'll put it on screen if
+there is. That's the zero. The zero can
+recruit as many digits to the left as it
+needs. And what we're actually doing is
+just using up all these digits. This is
+almost a free ride, as well. We're just
+using these up until we get to the
+business digits, which in this case is
+just the six.
+The six is the only
+power that's doing anything, cuz it's
+six to the power of one. So, that's
+that's it.
+And so, the zero is just eating all of
+these. These are all the free ride on
+the end.
+All this is
+is that this to the power, well it's
+square root, so this cubed
+um equals itself. How do you feel? Is
+that better or worse than the original?
+>> Worse.
+>> Oh.
+>> Because the zero is so incongruous. Like
+the zero doesn't belong there.
+>> It doesn't belong there. It's a
+perfectly It's a perfectly good digit.
+>> It's stood out a little bit too much.
+>> It's overpowered. What's it in superhero
+films? The power scaling issues, right?
+Zero is grossly overpowered.
+Because everything to the right of it is
+free ride, and as much as you want to
+the left is free ride. So, zero is just
+like the Everyone here, they're all with
+me. They're all coming with me. And it
+can it can expand as far as little in
+both directions as you want. Two
+to the 56
+square root
+200
+and 50
+six.
+Oh, sorry. I meant I meant seventh root.
+So, the fact this is resting on
+is that 2 to the power of 8 equals 256,
+right?
+So, I would have picked this up in my
+search because the base two it the
+answer begins with two.
+And then you're like, well, we got 80
+but we got 56 over here. But 56 is 7 *
+8. So, if we put a seventh root here,
+that means effectively that means to the
+power of 1/7.
+So, this all becomes, if you want to
+simplify that, this be here we can break
+that out. That is 2 to the 56. Instead
+of doing a seventh root, that's to the
+power of a seventh.
+And that means you divide 56 by 7, that
+gives you your 2 to the 8, 256.
+>> Am I okay with that? You're okay with
+that.
+>> It's pretty good, but the fact you had
+to write down a number seven.
+>> Uh
+>> There's no seven here, like it
+>> Is that making you sad now?
+>> Yeah, it loses its meminess.
+>> All right, here's another one.
+All right, new paper time.
+>> [music]
+>> Okay, Brady, for you
+I'm going to fix your concern and break
+something else. 247
+to the power of four
+plus 8 to the power of two to the power
+of 9763
+to the power of zero. There's our zero.
+To the power of 80. And then you know
+what? A bunch of other digits. Let's not
+get too distracted. square root
+equals
+2247482
+9763.
+There's our zero, 80, and a bunch more
+digits. There you go. And, as you may
+have noticed,
+there was a cheeky extra two out here.
+That's because
+Screw.
+There. Huh?
+Fixed it.
+We're using the square root.
+>> And there were more numbers here, but
+those
+>> Oh, yeah, yeah. Now, now, if you really
+want to dig into it, this number has 82
+digits.
+So, it's it's way way that way, but
+everything after the interference
+doesn't matter. Like, it this could be
+literally whatever digits you want. So,
+it doesn't matter what these are,
+because whatever they are, we can just
+copy them in there. So, I just stopped
+bothering writing the digits down,
+because the moment you get your zero or
+your one, you don't have to care what's
+afterwards, cuz you can pad it out here
+with whatever you fancy.
+>> And we've got this plus.
+>> Yeah, that I was hoping you wouldn't
+notice that.
+>> Well, I also noticed the zero, but
+>> Yeah.
+>> But I yeah.
+>> So, what I'm doing here is is collapsing
+that down. So, this is 2 to the 1. So,
+that's 8 squared is 64. That's 68.
+We've got the two at the front. Half of
+68 is 34, and 247 to the 34 is this.
+>> I'm more comfortable with the plus
+>> Okay.
+>> than I than I am with the zero.
+>> Wow, really? I'm more upset by the zero.
+I I'm upset at it in a way where I
+respect a really good successful weed.
+Or I'm like, that's a little annoying,
+but I'm amazed at your success
+against all odds. I I I like it as a
+loophole.
+I I think that well done.
+You found a way to
+to break the system and to succeed where
+you shouldn't. I don't know, I love it.
+And the fact that it means you can just
+have, you know, arbitrary digits for the
+rest of it, I find very very neat.
+>> But the effectiveness of the zero is
+what makes finding one without a zero
+all the more special.
+>> Ah, yeah, you really like the non-zero
+ones. You're right. But what what about
+what about 2673
+to the power of 495682?
+That's a big number.
+To the power of 48420.
+Then we get our extra zero.
+We could have done the first one. I just
+thought I'd pad that number out of this
+mission. Uh then to the 48 and then a
+bunch of stuff, right? That take a root,
+which in this case happens to be the
+11th root, but I'm not I'm not going to
+use that. Uh that now equals all of
+this. That equals 267349048.
+Blah, blah, blah, blah, blah. That zero,
+either one of these zeros, or both
+together, you could have a two-digit
+zero. That's kind of fun. Right? That is
+simplifying down. This is actually two
+673.
+You divide this
+by 11. That's to the power of 45062.
+That's a massive number. And this is
+that massive number. And this continues
+on. That's 154,000
+428
+digits.
+Isn't that not Look at the size of that.
+That's
+crazy big number. Whopper. If you were
+to write the whole In you In theory, you
+have to write them out twice cuz it
+equals it. And they're all up That might
+be Is that the record for the biggest
+root sign
+ever used? I didn't bother writing it
+all out. Let me Let me dot dot dot the
+root sign. Biggest implied root sign
+ever used in mathematics.
+Right? Cuz
+>> [laughter]
+>> it goes
+that way. Like if I'm doing
+Wait, if I'm doing let's say a
+centimeter per digit, maybe a little
+under that.
+So every 100 digits
+would be
+a meter.
+That's 1 and 1/2 km. That is basically
+just shy of a mile.
+>> So that root sign there has to be a a
+mile long.
+>> Yep.
+That's the mile. We've done a mile of
+pi, now we've done a mile of root sign
+implied.
+If we If we run with it.
+>> All right.
+>> So, that's And that's because of the
+zero Because of the zero, I I never
+computed the whole thing. I would only
+compute the lead bit and then check if
+the base matched the beginning. Oh, no.
+I'd always check with or without the
+root, but that's neither here nor there.
+And then, um I didn't bother with the
+rest. So, I I No one I've never actually
+computed the rest of this number, but I
+know that the meme works, right? Because
+of the zero. Power of the zero.
+>> [music]
+>> All right. To recap, here's the original
+one we're competing with. Two to the six
+to the two to the one to the four to the
+four
+square root equals 2 6 2 1
+4 4.
+It's nice.
+Everyone agrees.
+>> All single digits as well.
+>> All single digits.
+Implied two that we're not using. Here's
+my favorite candidate. Are you ready?
+Seven to the 82
+plus
+two
+to the three to the zero
+to the seven
+to the two to the eight to the four to
+the nine
+sixth root
+equals
+6 7
+8
+2 2 3 0 7 2 8 4
+9.
+>> [snorts]
+>> I give to you
+the best I can do. We're using the root.
+Cuz up here
+I hate to labor the point
+phantom two
+that is nowhere to be seen on this side.
+Using the root.
+Got the plus in there. Using a zero. And
+this is like a a tower that goes all the
+way up single single single single,
+single, single. Same deal. Single,
+single, single, single, single all the
+way up. It's all over there. It's all
+over there.
+What more do you want?
+Vote now.
+There's no vote.
+Bra- Bra- Brady's Brady's the
+adjudicator.
+>> Number file patrons can check out where
+the conversation went next and a few
+outtakes from filming. And if you want
+more Matt Parker in your life, and let's
+face it, who wouldn't, check out some
+links below for more videos, books, live
+shows, maths toys, all that good stuff.
+>> Ma- Like I know we joke around, all
+right? And you're a funny guy, and
+you're a comedy guy, and and this we've
+had a good laugh today.
+>> like there's a big butt coming up here.
+>> But
+>> But
