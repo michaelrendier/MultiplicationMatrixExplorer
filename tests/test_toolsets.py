@@ -4,7 +4,7 @@ import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 
-from toolsets import closedform, law, torsor, treeaut          # noqa: E402
+from toolsets import closedform, flow, law, torsor, treeaut          # noqa: E402
 import factor_reconstruction as fr                              # noqa: E402
 
 
@@ -43,3 +43,10 @@ def test_true_child_is_first_at_the_last_level_and_unremarkable_before():
     assert last["mean_rank"]["overflow"] < 0.01
     early = torsor.rank_test(4, 2, trials=100, seed=1)
     assert abs(early["z_vs_no_information"]["overflow"]) < 3
+
+
+def test_flow_order_kind_and_pisano():
+    r = flow.self_check()
+    assert r["pisano_10_100"] and r["pisano_matches_15*10^(k-1)_from_k=3"]
+    assert r["order_divides_bound_for_every_odd_prime_below_400"]
+    assert r["singular_mod_m_is_None"] and r["shift_nilpotency_20"]

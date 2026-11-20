@@ -3,4 +3,5 @@
 ``law``       closed-form count of the factor search's live states, unit-group torsors, the K = 0 address
 ``torsor``    walking down the solution tree: rank tests of the true path against its siblings
 ``treeaut``   automorphisms of the depth-n binary tree: order, and why x -> a x + b on Z/2^n has power-of-two cycles
+``flow``      the discrete-time piece of matrix-flow analysis: order of an integer 2x2 matrix mod m, and its elliptic/hyperbolic/parabolic kind
 """
